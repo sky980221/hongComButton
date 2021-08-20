@@ -3,4 +3,20 @@
     <button type="submit">Log Out</button>
 </form>
 
+
+<form action="/hostGame" method="POST">
+    <input type="text" placeholder="방제목..." id="roomName" name="roomName">
+    <button>방파기</button>
+</form>
+
+<a href="">TODO: 방 들어가기</a> 
+<!-- 방 들어가기 로직 : 방을 생성하면 current room 배열에 append함. current room의 for문을 돌려서 여기에 리스트를 띄울 예정. -->
+<% rooms.forEach((e) => { %> 
+ <div><%= e %></div>
+<% }) %>
+
+<div>Friend List :</div>
+ 
+
+
 <!-- 메인페이지 입니다 선생님 -->

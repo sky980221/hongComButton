@@ -12,6 +12,7 @@ const methodOverride = require('method-override')
 
 const initializePassport = require('./passport-config')
 const initialize = require('./passport-config')
+const makeRoom = require('./host-room')
 initializePassport(
     passport, 
     email => users.find(user => user.email === email),
@@ -19,13 +20,14 @@ initializePassport(
 )
 
 const users = []
+let rooms = []
 
 app.set('view-engine', 'ejs')
 app.use(express.urlencoded({ extended: false }))
 app.use(flash())
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave:false,
+    resave: false,
     saveUninitialized: false
 }))
 app.use(passport.initialize())
@@ -53,7 +55,10 @@ const checkNotAuthenticated = (req, res, next) => {
 }
 
 app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index.ejs', { name: req.user.name })
+    res.render('index.ejs', { 
+        name: req.user.name,
+        rooms
+    })
 })
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
@@ -86,6 +91,22 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
     console.log(users)
 })
 
+app.post('/hostGame', checkAuthenticated, (req, res) => {
+    if (makeRoom(req.body.name, rooms)) {
+        rooms.push(req.body.name)
+    }
+    else {
+        res.render('index.ejs', { 
+            name: req.user.roomName,
+            rooms
+        })
+    }
+    res.render('inGame.ejs', { 
+        name: req.user.name,
+        roomName: req.body.roomName
+    })
+
+})
 
 
 app.listen(3000)
